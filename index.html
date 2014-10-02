@@ -11,7 +11,7 @@
     <meta name="author" content="nnseva">
     <meta name="keywords" content="facebook,search,find,content">
 
-    <title data-i18n="FB Search"></title>
+    <title data-i18n="Search&amp;Find"></title>
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
@@ -85,7 +85,7 @@ body {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#" data-i18n="FB Search"></a>
+          <a class="navbar-brand" href="#" data-i18n="Search&amp;Find"></a>
         </div>
 
         <div class="navbar-collapse collapse">
@@ -200,7 +200,7 @@ body {
 <div id="fb-root"></div>
 <script>
 
-fbsearch = {
+fbsf = {
     log: function ( ) {
         if( window.console ) {
             try {
@@ -228,8 +228,8 @@ $(document).ready(function() {
   var application_user = {};
 
   function statusChangeCallback(response) {
-    fbsearch.log('statusChangeCallback');
-    fbsearch.log(response);
+    fbsf.log('statusChangeCallback');
+    fbsf.log(response);
     if (response.status === 'connected') {
         FB.api("/me","get",{fields:"id,first_name,gender,last_name,link,locale,middle_name,name,timezone,updated_time,verified,permissions"},function(data) {
             application_user = data;
@@ -368,7 +368,7 @@ $(document).ready(function() {
             locale: locale.split('-')[0]
         });
         $.i18n().load({
-            'ru':'/i18n/fbsearch-ru.json',
+            'ru':'/i18n/fbsf-ru.json',
         }).then(function() {
             $("[data-i18n]").i18n();
             applyAttrLocale("placeholder");
@@ -446,7 +446,7 @@ $(document).ready(function() {
     }
 
     function finishSearch() {
-        fbsearch.log("finish_search",found_count);
+        fbsf.log("finish_search",found_count);
         state = "input";
         $("#search-progress").hide();
         $("#search-text").show();
@@ -474,7 +474,7 @@ $(document).ready(function() {
 
     function fetchLimited(url,func) {
         var _err = function(hdr) {
-            fbsearch.log("Error while fetching:",hdr);
+            fbsf.log("Error while fetching:",hdr);
             var title = "Error";
             var msg = $.i18n("Some problem while requesting");
             if( hdr.status >= 400 && 500 > hdr.status ) {
@@ -544,13 +544,13 @@ $(document).ready(function() {
         });
     }
     function startSearch_friends() {
-        fbsearch.log("friends");
+        fbsf.log("friends");
     }
     function startSearch_commented() {
-        fbsearch.log("commented");
+        fbsf.log("commented");
     }
     function startSearch_reposts() {
-        fbsearch.log("reposts");
+        fbsf.log("reposts");
     }
 
     function analizePost(post) {
@@ -558,7 +558,7 @@ $(document).ready(function() {
         if( moment(post.updated_time).unix() > moment().unix() - limit) {
             var func = window['analizePost_'+post.type];
             if( !func ) {
-                fbsearch.log("Unknown post type "+post.type);
+                fbsf.log("Unknown post type "+post.type);
             } else {
                 return func(post);
             }
@@ -589,7 +589,7 @@ $(document).ready(function() {
     }
 
     function appendLink(post,found) {
-        fbsearch.log("append_link",found_count);
+        fbsf.log("append_link",found_count);
         var ids = post.id.split("_");
         return $.ajax({
             url:"https://graph.facebook.com/v1.0/"+ids[0],
@@ -610,7 +610,7 @@ $(document).ready(function() {
                 found_count += 1;
                 $('#results-table').append($pp); // TODO: add sorting - by timestamp?
                 progress($("#search-progress"),45,$.i18n("$1 of $2 {{plural:$1|post|posts}} found",found_count,analized_count));
-                fbsearch.log("append_link progress",found_count);
+                fbsf.log("append_link progress",found_count);
                 $td.append(
                     $('<table class="table table-condensed" style="border:0;width:100%;margin-bottom:0px"></table>').append(
                         '<thead style="border:0"></thead>'
