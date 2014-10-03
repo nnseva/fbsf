@@ -50,7 +50,16 @@ body {
 </head>
 <body>
     <div id="main" class="container">
-<!--#include virtual="/about-privacy.html" --> 
+    <div id="about-privacy"></div>
+    <script>
+    $(document).ready(function() {
+        $.ajax({
+            url:"about-privacy.html",
+        }).success(function(data) {
+            $('#about-privacy').append(data);
+        });
+    });
+    </script>
     </div> <!-- container -->
 
 </body>
