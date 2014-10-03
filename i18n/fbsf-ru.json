@@ -1,0 +1,40 @@
+{
+    "@metadata": {
+        "authors": [
+            "nnseva"
+        ],
+        "locale": "ru"
+    },
+    "Search&Find": "Ищи и Найдёшь",
+    "Search": "Поиск",
+    "Facebook content Search": "Поиск содержимого на Facebook",
+    "Search in": "Искать в",
+    "My feed":"Моя лента",
+    "My news":"Мои новости",
+    "Period": "Период",
+    "Last day":"Последний день",
+    "Last week":"Последняя неделя",
+    "Last month":"Последний месяц",
+    "Last year":"Последний год",
+    "Unlimited":"Неограниченный",
+    "About": "О ...",
+    "Application": "Приложении",
+    "Privacy": "Конфиденциальность",
+    "Toggle navigation":"Переключить",
+    "Save changes":"Сохранить изменения",
+    "Close":"Закрыть",
+    "Search for the content published by you and other people on the Facebook":
+        "Поиск содержимого, опубликованного вами и другими людьми на Facebook",
+    "About Application":"О приложении",
+    "About Privacy":"О конфиденциальности",
+    "Link here":"Ссылка",
+    "Error":"Ошибка",
+    "Server Error":"Ошибка сервера",
+    "Forbidden":"Запрещено",
+    "Some problem while requesting":"Возникла проблема при запросе данных",
+    "Permission has not been granted: $1, you probably will not get a proper result":"Не было предоставлено право: $1, вы можете не получить правильный результат",
+    "<strong>Please!</strong> Input something to search":"<strong>Пожалуйста!</strong> Введите что-нибудь для поиска",
+    "$1 of $2 {{plural:$1|post|posts}} found":"$1 из $2 найдено",
+    "WARNING! You don't have enough permissions to gain a proper result, permission $1 has not been granted":"ВНИМАНИЕ! У вас нет достаточно прав чтобы получить правильный результат, право $1 не предоставлено",
+    "$1 {{plural:$1|post has|posts have}} been analized, $2 {{plural:$2|has|have}} been found":"Найдено $2 {{plural:$2|сообщение|сообщений|сообщения}} из $1 {{plural:$1|проанализированного|проанализированных}}"
+}

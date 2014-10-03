@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Facebook Content Search Application">
+    <meta name="author" content="nnseva">
+    <meta name="keywords" content="facebook,search,find,content">
+
+    <title data-i18n="Search&amp;Find"></title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="ie10-viewport-bug-workaround.js"></script>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.3/moment-with-locales.min.js"></script>
+
+    <!-- i18n support -->
+    <script src="/jquery.i18n/CLDRPluralRuleParser.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.messagestore.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.fallbacks.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.parser.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.emitter.js"></script>
+    <script src="/jquery.i18n/jquery.i18n.language.js"></script>
+
+    <!-- i18n language base -->
+    <script src="/jquery.i18n/languages/bs.js"></script>
+    <script src="/jquery.i18n/languages/dsb.js"></script>
+    <script src="/jquery.i18n/languages/fi.js"></script>
+    <script src="/jquery.i18n/languages/ga.js"></script>
+    <script src="/jquery.i18n/languages/he.js"></script>
+    <script src="/jquery.i18n/languages/hsb.js"></script>
+    <script src="/jquery.i18n/languages/hu.js"></script>
+    <script src="/jquery.i18n/languages/hy.js"></script>
+    <script src="/jquery.i18n/languages/la.js"></script>
+    <script src="/jquery.i18n/languages/ml.js"></script>
+    <script src="/jquery.i18n/languages/os.js"></script>
+    <script src="/jquery.i18n/languages/ru.js"></script>
+    <script src="/jquery.i18n/languages/sl.js"></script>
+    <script src="/jquery.i18n/languages/uk.js"></script>
+
+    <style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  /*  strange ... */
+  margin-top: 15px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 28px;
+  background-color: #f5f5f5;
+}
+    </style>
+
+</head>
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only" data-i18n="Toggle navigation"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" data-i18n="Search&amp;Find"></a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <form id="search-form" class="navbar-form navbar-left only-online" role="search">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="progress input-group-addon" id="search-progress" style="width:200px;display:none">
+                            <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                                <span class="sr-only">45% Complete</span>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control disabled" id="search-text" name="search-text" i18n-placeholder="Search" style="width:200px">
+                        <span class="input-group-btn">
+                            <button type="submit" id="start-search" class="btn btn-default disabled"><span class="glyphicon glyphicon-search"></span>&nbsp;</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <ul class="nav navbar-nav only-online">
+                <li class="dropdown" id="options-list">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span data-i18n="Search in"></span>&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu" style="width:300px">
+                        <form class="navbar-form" role="options">
+                            <li><div class="checkbox sel"><label><input type="checkbox" id="feed" name="feed" checked="checked"><span data-i18n="My feed"></span></label></div></li>
+                            <li><div class="checkbox sel"><label><input type="checkbox" id="home" name="home"><span data-i18n="My news"></span></label></div></li>
+                        <!--    <li><div class="checkbox sel"><label><input type="checkbox" id="friens" name="friends"> Posts of my friends</label></div></li>
+                            <li><div class="checkbox sel"><label><input type="checkbox" id="commented" name="commented"> Posts commented by me</label></div></li>
+                            <li><div class="checkbox sel"><label><input type="checkbox" id="reposts" name="reposts"> Reposts of listed above</label></div></li>
+                            <li class="divider"></li>
+                            <li><div class="checkbox opt"><label><input type="checkbox" id="comments" name="comments"> Comments on posts listed above</label></div></li> -->
+                        </form>
+                    </ul>
+                </li>
+
+                <li class="dropdown" id="period-selector">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span data-i18n="Period"></span>&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu" style="width:300px">
+                        <form class="navbar-form" role="period">
+                            <li><div class="radio sel"><label><input type="radio" id="day" value="day" name="period"><span data-i18n="Last day">Last day</span></label></div></li>
+                            <li><div class="radio sel"><label><input type="radio" id="week" value="week" name="period"><span data-i18n="Last week">Last week</span></label></div></li>
+                            <li><div class="radio sel"><label><input type="radio" id="month" value="month" name="period" checked="checked"><span data-i18n="Last month">Last month</span></label></div></li>
+                            <li><div class="radio sel"><label><input type="radio" id="year" value="year" name="period"><span data-i18n="Last year">Last year</span></label></div></li>
+                            <li><div class="radio sel"><label><input type="radio" id="unlimited" value="unlimited" name="period"><span data-i18n="Unlimited">Unlimited</span></label></div></li>
+                        </form>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span data-i18n="About"></span>&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" id="menu-about-application" data-i18n="Application"></a></li>
+                        <li><a href="#" id="menu-about-privacy" data-i18n="Privacy"></a></li>
+                    </ul>
+                </li>
+        <!--
+
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+        -->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="true" data-scope="public_profile,user_friends,read_stream" onlogin="checkLoginState"></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div id="main" class="container">
+        <div class="page-header">
+            <h1 data-i18n="Facebook content Search"></h1>
+        </div>
+        <div id="results">
+            <p data-i18n="Search for the content published by you and other people on the Facebook"></p>
+        </div>
+    </div> <!-- container -->
+
+    <div class="footer">
+<div class="fb-like" data-share="true" data-width="450" data-show-faces="true"></div>
+    </div>
+
+<div id="dialog" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only" data-i18n="Close"></span></button>
+        <h4 id="dialog-title" class="modal-title"></h4>
+      </div>
+      <div id="dialog-body" class="modal-body">
+        <p></p>
+      </div>
+      <div class="modal-footer">
+        <button id="dialog-button-close" type="button" class="btn btn-default" data-dismiss="modal" data-i18n="Close"></button>
+        <button id="dialog-button-save" type="button" class="btn btn-primary" style="display:none" data-i18n="Save changes"></button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="fb-root"></div>
+<script>
+
+fbsf = {
+    log: function ( ) {
+        if( window.console ) {
+            try {
+                window.console.log.apply( arguments );
+            } catch(e) {
+            }
+        }
+    }
+}
+
+$(document).ready(function() {
+  $.ajaxSetup({ cache: true });
+  //$.support.cors = true;
+  $.getScript('//connect.facebook.net/en_UK/all.js', function(){
+    FB.init({
+      appId      : '810086479038798',
+      xfbml      : true,
+      version    : 'v1.0'
+    });
+    $('#loginbutton,#feedbutton').removeAttr('disabled');
+    FB.getLoginStatus(statusChangeCallback);
+  });
+});
+
+  var application_user = {};
+
+  function statusChangeCallback(response) {
+    fbsf.log('statusChangeCallback');
+    fbsf.log(response);
+    if (response.status === 'connected') {
+        FB.api("/me","get",{fields:"id,first_name,gender,last_name,link,locale,middle_name,name,timezone,updated_time,verified,permissions"},function(data) {
+            application_user = data;
+            startWork();
+        });
+        $(".fb-like").show();
+        $(".only-online").show();
+    } else {
+        $(".fb-like").hide();
+        $(".only-online").hide();
+    }
+  }
+
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+    var state = "input";
+    var stem = "";
+    var limit = 0;
+    var analized_count = 0;
+    var found_count = 0;
+    var options = localStorage['options'];
+    if( options )
+        options = JSON.parse(options);
+    if( !options )
+        options = {
+            searchin:{feed:true},
+            period:'week'
+        }
+
+    var limits = {
+        day:3600*24,
+        week:3600*24*7,
+        month:3600*24*31,
+        year:3600*24*366,
+        unlimited:0
+    };
+
+    function showDialog(title,url) {
+        $("#dialog-title").empty();
+        $("#dialog-body").empty();
+        $("#dialog-title").append($.i18n(title));
+        $.ajax({
+            url:url.replace('.html',"-"+$.i18n().locale+".html")
+        }).then(function(data) {
+            $("#dialog-body").append(data);
+            $("#dialog").modal({
+            });
+        },function(){
+            $.ajax({
+                url:url
+            }).then(function(data) {
+                $("#dialog-body").append(data);
+                $("#dialog").modal({
+                });
+            });
+        });
+    }
+
+    function showDialogLocal(title,content) {
+        $("#dialog-title").empty();
+        $("#dialog-body").empty();
+        $("#dialog-title").append($.i18n(title));
+        $("#dialog-body").append(content);
+        $("#dialog").modal({
+        });
+    }
+
+    $('#menu-about-application').on('click',function(e) {
+        e.preventDefault();
+        showDialog("About Application","/about-application.html");
+    });
+
+    $('#menu-about-privacy').on('click',function(e) {
+        e.preventDefault();
+        showDialog("About Privacy","/about-privacy.html");
+    });
+
+    function applyOptions() {
+        $.each($("#options-list li"),function(i,li) {
+            var $inp = $(li).find("input");
+            if($inp.attr('id') in options.searchin) {
+                $inp.prop("checked",true);
+            } else {
+                $inp.prop("checked",false);
+            }
+        });
+        $.each($("#period-selector li"),function(i,li) {
+            var $inp = $(li).find("input");
+            if($inp.attr('id') == options.period) {
+                $inp.prop("checked",true);
+            }
+        });
+    }
+
+    function storeOptions() {
+        options.searchin = {};
+        options.period = "";
+        $.each($("#options-list li"),function(i,li) {
+            var $inp = $(li).find("input");
+            if($inp.prop("checked")) {
+                options.searchin[$inp.attr("id")] = true;
+            }
+        });
+        $.each($("#period-selector li"),function(i,li) {
+            var $inp = $(li).find("input");
+            if($inp.prop("checked")) {
+                options.period = $inp.attr("id");
+            }
+        });
+        localStorage['options'] = JSON.stringify(options);
+    }
+
+    $("#options-list input").on('change',function(e) {
+        storeOptions();
+    });
+
+    $("#period-selector input").on('change',function(e) {
+        storeOptions();
+    });
+
+    function applyAttrLocale(attr) {
+        $.each($("[i18n-"+attr+"]"),function(i,div) {
+            var $div = $(div);
+            $div.attr(attr,$.i18n($div.attr("i18n-"+attr)));
+        });
+    }
+
+    function applyLocale(locale) {
+        locale = locale.replace('_','-')
+        moment.locale(locale);
+        $.i18n({
+            locale: locale.split('-')[0]
+        });
+        $.i18n().load({
+            'ru':'/i18n/fbsf-ru.json',
+        }).then(function() {
+            $("[data-i18n]").i18n();
+            applyAttrLocale("placeholder");
+            applyAttrLocale("alt");
+            applyAttrLocale("title");
+        });
+    }
+
+    function progress($div,percent,message) {
+        $div.find(".progress-bar").attr('width',''+percent+'%');
+        $div.find(".progress-bar").text(message);
+    }
+
+    function startWork() {
+        applyOptions();
+        applyLocale(application_user.locale);
+        $("#search-form .disabled").removeClass("disabled");
+        $("#search-form").on("submit",function(e) {
+            e.preventDefault();
+            if( state == "input") {
+                if( $('#search-text').val().length == 0 ) {
+                    $('#results').prepend('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                        '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+                        $.i18n('<strong>Please!</strong> Input something to search')+
+                        '</div>'
+                    );
+                } else {
+                    startSearch();
+                }
+            } else {
+                stopSearch();
+            }
+        });
+    }
+
+    function startSearch() {
+        state = "search";
+        analized_count = 0;
+        found_count = 0;
+        progress($("#search-progress"),45,$.i18n("$1 of $2 {{plural:$1|post|posts}} found",found_count,analized_count));
+        stem = $('#search-text').val();
+        limit = limits[$('#period-selector').find(':checked').val()];
+        $("#results").empty();
+
+        if( application_user && application_user.permissions && application_user.permissions.data ) {
+            var pp = application_user.permissions.data;
+            for(var i in pp) {
+                var p = pp[i];
+                if( p.status != "granted" ) {
+                    $('#results').prepend('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                        '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+                        $.i18n("WARNING! You don't have enough permissions to gain a proper result, permission $1 has not been granted",p.permission,0)+
+                        '</div>'
+                    );
+                }
+            }
+        }
+
+        $("#results").append('<table id="results-table" class="table table-stripped table-hover table-condensed"></table>');
+        $("#search-text").hide();
+        $("#search-progress").show();
+
+        $("#start-search span").attr("class","");
+        $("#start-search span").addClass("glyphicon");
+        $("#start-search span").addClass("glyphicon-remove");
+
+        var d = new Array();
+        $.each($('#options-list').find('.sel :checked'),function(i,opt) {
+            var func = window['startSearch_'+$(opt).attr('name')];
+            var r = func();
+            if( r )
+                d.push(r);
+        });
+        $.when.apply($,d).then(finishSearch);
+    }
+
+    function finishSearch() {
+        fbsf.log("finish_search",found_count);
+        state = "input";
+        $("#search-progress").hide();
+        $("#search-text").show();
+        $("#start-search span").attr("class","");
+        $("#start-search span").addClass("glyphicon");
+        $("#start-search span").addClass("glyphicon-search");
+        $("#results tbody")
+        $("#start-search").removeClass("disabled");
+
+        $('#results').prepend('<div class="alert alert-info alert-dismissible" role="alert">'+
+            '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+            $.i18n("$1 {{plural:$1|post has|posts have}} been analized, $2 {{plural:$2|has|have}} been found",analized_count,found_count)+
+            '</div>'
+        );
+    }
+
+    function stopSearch() {
+        state = "stop";
+
+        $("#start-search").addClass("disabled");
+        $("#start-search span").attr("class","");
+        $("#start-search span").addClass("glyphicon");
+        $("#start-search span").addClass("glyphicon-pause");
+    }
+
+    function fetchLimited(url,func) {
+        var _err = function(hdr) {
+            fbsf.log("Error while fetching:",hdr);
+            var title = "Error";
+            var msg = $.i18n("Some problem while requesting");
+            if( hdr.status >= 400 && 500 > hdr.status ) {
+                title = "Forbidden";
+                if( hdr.responseJSON && hdr.responseJSON.error && hdr.responseJSON.error.message )
+                    msg = msg + ":" + hdr.responseJSON.error.message;
+                else
+                    msg = hdr.response;
+            }
+            if( hdr.status >= 500 && 600 > hdr.status ) {
+                title = "Server Error";
+                if( hdr.responseJSON && hdr.responseJSON.error && hdr.responseJSON.error.message )
+                    msg = msg + ":" + hdr.responseJSON.error.message;
+                else
+                    msg = hdr.response;
+            }
+            showDialogLocal(title,msg);
+            var r = $.Deferred();
+            r.resolve();
+            return r;
+        }
+        var _cont = function(data) {
+            if( analized_count == 0 && data.data && data.data.length == 0 ) {
+                showDialogLocal("Error",
+                    "This application in a development mode yet, you are probably not yet allowed to use this application."+
+                    'Contact to the <a href="https://www.facebook.com/nnseva">developer</a> to gain a test access');
+            }
+            if(state == "search" && data && data.paging && data.paging.next && data.paging.next.length) {
+                var r = func(data);
+                var till = data.paging.next.replace(/.*until=/,"").replace(/&.*/,"")*1;
+                if( limit == 0 || till > moment().unix() - limit ) {
+                    return $.when($.ajax({
+                        url:data.paging.next,
+                        crossDomain:true,
+                        dataType:'jsonp',
+                    }).then(_cont,_err),r);
+                }
+                return $.when(r);
+            }
+        }
+        return $.ajax({
+            url:url,
+            dataType:'jsonp',
+            crossDomain:true,
+            data: {
+                access_token:FB.getAccessToken(),
+                limit:25
+            }
+        }).then(_cont,_err);
+    }
+
+    function startSearch_feed() {
+        return fetchLimited('https://graph.facebook.com/v1.0/me/feed',function(data) {
+            var d = [];
+            $.each(data.data,function(i,post) { d.push(analizePost(post)); });
+            progress($("#search-progress"),45,$.i18n("$1 of $2 {{plural:$1|post|posts}} found",found_count,analized_count));
+            return $.when.apply($,d);
+        });
+    }
+
+    function startSearch_home() {
+        return fetchLimited('https://graph.facebook.com/v1.0/me/home',function(data) {
+            var d = [];
+            $.each(data.data,function(i,post) { d.push(analizePost(post)); });
+            progress($("#search-progress"),45,$.i18n("$1 of $2 {{plural:$1|post|posts}} found",found_count,analized_count));
+            return $.when.apply($,d);
+        });
+    }
+    function startSearch_friends() {
+        fbsf.log("friends");
+    }
+    function startSearch_commented() {
+        fbsf.log("commented");
+    }
+    function startSearch_reposts() {
+        fbsf.log("reposts");
+    }
+
+    function analizePost(post) {
+        analized_count += 1;
+        if( moment(post.updated_time).unix() > moment().unix() - limit) {
+            var func = window['analizePost_'+post.type];
+            if( !func ) {
+                fbsf.log("Unknown post type "+post.type);
+            } else {
+                return func(post);
+            }
+        }
+    }
+
+    function findText(message,stem) {
+        if( !message )
+            return;
+        // Now properly searches the only string stem
+        // TODO: make a regexp search
+        var pos = message.toLowerCase().search(stem.toLowerCase());
+        if( pos >= 0 ) {
+            var pos1 = Math.max(0,pos-30);
+            var piece1 = message.substr(pos1,pos-pos1);
+            if( pos > 30 ) piece1 = "..."+piece1;
+            var piece2 = message.substr(pos,stem.length);
+            var pos2 = Math.min(message.length,pos + stem.length + 30);
+            var piece3 = message.substr(pos+stem.length,pos2-(pos+stem.length));
+            if( message.length > pos2 ) piece3 = piece3 + "...";
+            return {
+                pos:pos,
+                prepend:$(document.createTextNode(piece1)),
+                found:$('<b></b>').append($(document.createTextNode(piece2))),
+                append:$(document.createTextNode(piece3))
+            }
+        }
+    }
+
+    function appendLink(post,found) {
+        fbsf.log("append_link",found_count);
+        var ids = post.id.split("_");
+        return $.ajax({
+            url:"https://graph.facebook.com/v1.0/"+ids[0],
+            dataType:'jsonp',
+            crossDomain:true,
+            data: {
+                access_token:FB.getAccessToken(),
+                fields:"name,link"
+            }
+        }).then(function(data) {
+            var pp = $('#results').find('[data-id="'+post.id+'"]');
+            if(pp.length == 0) {
+                var $pp = $('<tr class="result" data-id="'+post.id+'"></tr>');
+                var $a = $('<a href="https://www.facebook.com/'+post.id+'" target="_blank"></a>');
+                var $td = $('<td></td>');
+                $pp.data("post",post);
+                $pp.append($td);
+                found_count += 1;
+                $('#results-table').append($pp); // TODO: add sorting - by timestamp?
+                progress($("#search-progress"),45,$.i18n("$1 of $2 {{plural:$1|post|posts}} found",found_count,analized_count));
+                fbsf.log("append_link progress",found_count);
+                $td.append(
+                    $('<table class="table table-condensed" style="border:0;width:100%;margin-bottom:0px"></table>').append(
+                        '<thead style="border:0"></thead>'
+                    ).append($('<tbody style="border:0"></tbody>')
+                        .append($('<tr style="border:0"></tr>')
+                            .append($('<td colspan=2 style="font-size:13px;border:0"></td>')
+                                .append($('<p style="margin:0">')
+                                    .append($('<a href="'+data.link+'" title="'+data.name+'" target="_blank">')
+                                        .append('<img height=20 width=20 src="https://graph.facebook.com/v1.0/'+ids[0]+'/picture/?height=20&width=20" alt="'+data.name+'"/>')
+                                    )
+                                    .append(found.prepend)
+                                    .append(found.found)
+                                    .append(found.append)
+                                )
+                            )
+                        ).append($('<tr style="border:0"></tr>')
+                            .append($('<td style="font-size:10px;color:gray;border:0"></td>')
+                                .append(moment(post.updated_time).fromNow())
+                            ).append($('<td style="font-size:12px;border:0;text-align:right;"></td>')
+                                .append($a
+                                    .append($.i18n('Link here'))
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+        });
+    }
+
+    function analizePost_status(post) {
+        var found = findText(post.message,stem);
+        if( found ) {
+            return appendLink(post,found);
+        }
+    }
+
+    function analizePost_link(post) {
+        var found = findText(post.message,stem);
+        if( !found )
+            found = findText(post.description,stem);
+        if( !found )
+            found = findText(post.name,stem);
+        if( found ) {
+            return appendLink(post,found);
+        }
+    }
+
+    function analizePost_photo(post) {
+        var found = findText(post.message,stem);
+        if( !found )
+            found = findText(post.caption,stem);
+        if( found ) {
+            return appendLink(post,found);
+        }
+    }
+
+    function analizePost_video(post) {
+        var found = findText(post.message,stem);
+        if( !found )
+            found = findText(post.description,stem);
+        if( !found )
+            found = findText(post.name,stem);
+        if( found ) {
+            return appendLink(post,found);
+        }
+    }
+
+    function analizePost_swf(post) {
+        var found = findText(post.message,stem);
+        if( !found )
+            found = findText(post.description,stem);
+        if( !found )
+            found = findText(post.name,stem);
+        if( !found )
+            found = findText(post.caption,stem);
+        if( found ) {
+            return appendLink(post,found);
+        }
+    }
+
+</script>
+
+</body>
