@@ -254,6 +254,9 @@ $(document).ready(function() {
     var limit = 0;
     var analized_count = 0;
     var found_count = 0;
+
+    var stream_found = false;
+
     var options = localStorage['options'];
     if( options )
         options = JSON.parse(options);
@@ -367,7 +370,7 @@ $(document).ready(function() {
         $.i18n({
             locale: locale.split('-')[0]
         });
-        $.i18n().load({
+        return $.i18n().load({
             'ru':'/i18n/fbsf-ru.json',
         }).then(function() {
             $("[data-i18n]").i18n();
@@ -384,7 +387,26 @@ $(document).ready(function() {
 
     function startWork() {
         applyOptions();
-        applyLocale(application_user.locale);
+        applyLocale(application_user.locale).then(function() {
+            $.each(application_user.permissions,function(i,d) {
+                if( d.permission == 'read_stream' && d.status == 'granted' )
+                    stream_found = true;
+            });
+            if( stream_found ) {
+                $('#results').prepend('<div class="alert alert-info alert-dismissible" role="alert">'+
+                    '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+                    $.i18n('<strong>Welcome!</strong> You can use this application')+
+                    '</div>'
+                );
+            } else {
+                $('#results').prepend('<div class="alert alert-warning alert-dismissible" role="alert">'+
+                    '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+                    $.i18n("<strong>Attention!</strong> You can not use this application till submission you as a 'tester' from the <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">developer</a> "+
+                        "because the Facebook didn't approve application for using read_stream permission. Don't hesitage to request submission from <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">me</a>")+
+                    '</div>'
+                );
+            }
+        });
         $("#search-form .disabled").removeClass("disabled");
         $("#search-form").on("submit",function(e) {
             e.preventDefault();
@@ -413,18 +435,13 @@ $(document).ready(function() {
         limit = limits[$('#period-selector').find(':checked').val()];
         $("#results").empty();
 
-        if( application_user && application_user.permissions && application_user.permissions.data ) {
-            var pp = application_user.permissions.data;
-            for(var i in pp) {
-                var p = pp[i];
-                if( p.status != "granted" ) {
-                    $('#results').prepend('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                        '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
-                        $.i18n("WARNING! You don't have enough permissions to gain a proper result, permission $1 has not been granted",p.permission,0)+
-                        '</div>'
-                    );
-                }
-            }
+        if( !stream_found ) {
+                $('#results').prepend('<div class="alert alert-warning alert-dismissible" role="alert">'+
+                    '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'+$.i18n("Close")+'</span></button>'+
+                    $.i18n("<strong>Attention!</strong> You can not use this application till submission you as a 'tester' from the <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">developer</a> "+
+                        "because the Facebook didn't approve application for using read_stream permission. Don't hesitage to request submission from <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">me</a>")+
+                    '</div>'
+                );
         }
 
         $("#results").append('<table id="results-table" class="table table-stripped table-hover table-condensed"></table>');
@@ -499,10 +516,14 @@ $(document).ready(function() {
         var _cont = function(data) {
             if( analized_count == 0 && data.data && data.data.length == 0 ) {
                 showDialogLocal("Error",
-                    "This application in a development mode yet, you are probably not yet allowed to use this application."+
-                    'Contact to the <a href="https://www.facebook.com/nnseva">developer</a> to gain a test access');
-            }
-            if(state == "search" && data && data.paging && data.paging.next && data.paging.next.length) {
+                    i18n("You are probably not yet allowed to use this application. "+
+                    'Contact to the <a href="https://www.facebook.com/nnseva" target=\"_blank\">developer</a> to gain an access'));
+            } else if( analized_count == 0 && data.error ) {
+                title = "Error";
+                msg = $.i18n("You are probably not yet allowed to use this application. "+
+                    'Contact to the <a href="https://www.facebook.com/nnseva" target=\"_blank\">developer</a> to gain an access');
+                showDialogLocal(title,data.error.message+"<br/>"+msg);
+            } else if(state == "search" && data && data.paging && data.paging.next && data.paging.next.length) {
                 var r = func(data);
                 var till = data.paging.next.replace(/.*until=/,"").replace(/&.*/,"")*1;
                 if( limit == 0 || till > moment().unix() - limit ) {
