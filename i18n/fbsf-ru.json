@@ -36,5 +36,10 @@
     "<strong>Please!</strong> Input something to search":"<strong>Пожалуйста!</strong> Введите что-нибудь для поиска",
     "$1 of $2 {{plural:$1|post|posts}} found":"$1 из $2 найдено",
     "WARNING! You don't have enough permissions to gain a proper result, permission $1 has not been granted":"ВНИМАНИЕ! У вас нет достаточно прав чтобы получить правильный результат, право $1 не предоставлено",
-    "$1 {{plural:$1|post has|posts have}} been analized, $2 {{plural:$2|has|have}} been found":"Найдено $2 {{plural:$2|сообщение|сообщений|сообщения}} из $1 {{plural:$1|проанализированного|проанализированных}}"
+    "$1 {{plural:$1|post has|posts have}} been analized, $2 {{plural:$2|has|have}} been found":"Найдено $2 {{plural:$2|сообщение|сообщений|сообщения}} из $1 {{plural:$1|проанализированного|проанализированных}}",
+    "<strong>Welcome!</strong> You can use this application":"<strong>Добро пожаловать!</strong> Вы можете использовать это приложение",
+    "<strong>Attention!</strong> You can not use this application till submission you as a 'tester' from the <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">developer</a> because the Facebook didn't approve application for using read_stream permission. Don't hesitage to request submission from <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">me</a>":
+    "<strong>Внимание!</strong> Вы не можете использовать это приложение без включения Вас в список \"тестеров\" <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">разработчиком приложения</a>, поскольку Facebook не разрешил приложению пользоваться правом read_stream. Не стесняйтесь запросить <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">меня</a> включить Вас в этот список",
+    "You are probably not yet allowed to use this application. Contact to the <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">developer</a> to gain an access":
+    "Вероятно, вам еще не разрешено пользоваться приложением. Свяжитесь с <a href=\"https://www.facebook.com/nnseva\" target=\"_blank\">разработчиком</a>, чтобы получить доступ"
 }
