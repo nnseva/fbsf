@@ -388,7 +388,7 @@ $(document).ready(function() {
     function startWork() {
         applyOptions();
         applyLocale(application_user.locale).then(function() {
-            $.each(application_user.permissions,function(i,d) {
+            $.each(application_user.permissions.data,function(i,d) {
                 if( d.permission == 'read_stream' && d.status == 'granted' )
                     stream_found = true;
             });
